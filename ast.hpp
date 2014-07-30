@@ -35,6 +35,86 @@ class NodeStatement : public Node
 {
 };
 
+/**
+ * All allowed types for a node.
+ */
+enum NodeType
+{
+	NODETYPE_IDENTIFIER, NODETYPE_STRING, NODETYPE_NUMBER
+};
+
+/**
+ * Node that has a type attached to itself.
+ *
+ * Virtual class, need to specify the types on
+ * child classes.
+ */
+class NodeTyped : public NodeExpression
+{
+protected:
+	NodeType type;
+
+public:
+	NodeTyped(NodeType type, Node* newLeft, Node* newRight):
+		NodeExpression(newLeft, newRight),
+		type(type)
+	{ }
+
+	virtual void outputCode() = 0;
+
+	int getType()
+	{
+		return type;
+	}
+};
+
+/**
+ * A literal number anywhere on the code.
+ *
+ * For example, the `2` on `int a = 2`.
+ */
+class NodeNumber : public NodeTyped
+{
+private:
+	int value;
+
+public:
+	NodeNumber(int value):
+		NodeTyped(NODETYPE_NUMBER, NULL, NULL),
+		value(value)
+	{ }
+
+	void outputCode()
+	{
+		// Output something to indicate we
+		// have a number
+		// (temp data, whatever)
+	}
+};
+
+/**
+ * A literal string anywhere on the code.
+ * For example, the `"hi"` on `char* a = "hi"`.
+ */
+class NodeStringLiteral : public NodeTyped
+{
+private:
+	std::string literal;
+
+public:
+	NodeStringLiteral(std::string literal):
+		NodeTyped(NODETYPE_STRING, NULL, NULL),
+		literal(literal)
+	{ }
+
+	void outputCode()
+	{
+		// Output something to indicate
+		// we have a string
+		// (temp data, whatever)
+	}
+};
+
 
 #endif /* AST_HPP_DEFINED */
 
